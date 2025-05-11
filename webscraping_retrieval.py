@@ -11,6 +11,8 @@ headers = {
     "Connection": "keep-alive"
 }
 
+name, price, ratings, image_url = [], [], [], []
+
 url = "https://www.flipkart.com/search?q=mobile+phonmes&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off&as-pos=1&as-type=HISTORY"
 
 response = requests.get(url, headers=headers)
@@ -26,13 +28,32 @@ for product in products:
 
      # Product name
     product_name = product.find("div", class_="KzDlHZ").text
+    name.append(product_name)
+
+     # Product price
     product_price = product.find("div", class_="Nx9bqj _4b5DiR").text
+    price.append(product_price)
+
+     #product ratings
     product_ratings = product.find("div", class_="XQDdHH").text
+    ratings.append(product_ratings)
+
+     #product image url
     product_image = product.find("img", class_="DByuf4")["src"]
+    image_url.append(product_image)
 
-    print(product_name)
-    print(product_price)
-    print(product_ratings)
-    print(product_image)
-    print("-"*60)
 
+
+df = pd.DataFrame(
+    {
+        "name":name,
+        "price":price,
+        "ratings":ratings,
+        "image_url":image_url
+    }
+)
+
+
+df.to_csv("flipkart_products.csv", index=False)
+
+print(df)
